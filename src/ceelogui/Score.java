@@ -31,6 +31,18 @@ public class Score {
         
     }
     
+    @Override
+    public String toString(){
+        return (dievalue1 + " " + dievalue2 + " " + dievalue3);
+    }
+    
+    public void clear_score(){
+        this.dievalue1 = 0;
+        this.dievalue2 = 0;
+        this.dievalue3 = 0;
+        this.point = 0;
+    }
+    
     public void set_dice(int a, int b, int c){
         this.dievalue1 = a;
         this.dievalue2 = b;
@@ -75,14 +87,29 @@ public class Score {
     
 
     public boolean is_trips(){
+        point = dievalue1;
         return (this.dievalue1==this.dievalue2)
                         &&(this.dievalue2==this.dievalue3);
     }             
     
-    public boolean pair(){
-        return (this.dievalue1 == this.dievalue2)||
-                        (this.dievalue2 == this.dievalue3)||
-                            (this.dievalue1 == this.dievalue3);
+    public boolean is_pair(){
+        int[] freq = new int[6];
+        int[] freqfreq = new int [4];
+        freq[dievalue1-1]++;
+        freq[dievalue2-1]++;
+        freq[dievalue3-1]++;
+        for (int i: freq) freqfreq[i]++;
+        if (freqfreq[2]==1) {
+            for (int i=0; i<6; i++) {
+                if (freq[i]==1) { point = i+1; break; }
+            }
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean is_valid_combo(){
+        return this.is_trips()||this.is_pair();   
     }
     
     public int get_point(){

@@ -11,16 +11,55 @@ package ceelogui;
 public class Player {
     private String name;
     private Score roll;
-    
+    private boolean turn; //true if it is this player's turn
+    private int wins;
     
     public Player(){
         this.name = "Player";
         this.roll = new Score();
+        this.turn = false;
+        
     }
     
     public Player(String name){
         this.name = name;
         this.roll = new Score();
+    }
+    
+    public void pclear_score(){
+        this.roll.clear_score();
+    }
+    
+    public String toString(){
+        return (name + " rolled " + roll.toString());
+    }
+    
+    public boolean equals(Object o){
+        if(o == null)
+            return false;
+        if(!(o instanceof Player))
+            return false;
+        else
+            return this.name == ((Player) o).name;
+    }
+    
+    public String get_name() {
+        return this.name;
+    }
+    
+    public int get_wins(){
+        return this.wins;
+    }
+    
+    public void set_wins(int n){
+        this.wins = n;
+    }
+     public boolean get_turn(){
+        return this.turn;
+    }
+    
+    public void set_turn(boolean b){
+        this.turn = b;
     }
     
     public Score get_roll(){
@@ -31,10 +70,6 @@ public class Player {
         roll.set_dice(a.roll(), b.roll(), c.roll());
     }
     
-    public void set_point(){
-        roll.set_point();
-    }
-    
     //methods to check Player's roll
     public boolean rolled_trips(){
         return roll.is_trips();
@@ -42,6 +77,7 @@ public class Player {
     
     public boolean rolled_instant_win(){
         return roll.instant_win();
+        
     }
     
     public boolean rolled_instant_loss(){
@@ -49,6 +85,7 @@ public class Player {
     }
     
     public boolean rolled_pair(){
-        return roll.pair();
+        System.out.println("Rolled a pair!");
+        return roll.is_pair();
     }
 }
