@@ -26,7 +26,7 @@ public class Player {
         this.roll = new Score();
     }
     
-    public void pclear_score(){
+    public void clear_score(){
         this.roll.clear_score();
     }
     
@@ -51,9 +51,10 @@ public class Player {
         return this.wins;
     }
     
-    public void set_wins(int n){
-        this.wins = n;
+    public void incr_wins(){
+        this.wins++;
     }
+    
      public boolean get_turn(){
         return this.turn;
     }
@@ -85,7 +86,6 @@ public class Player {
     }
     
     public boolean rolled_pair(){
-        System.out.println("Rolled a pair!");
         return roll.is_pair();
     }
 }

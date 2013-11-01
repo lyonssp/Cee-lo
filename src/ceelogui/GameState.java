@@ -27,35 +27,51 @@ public class GameState{
         return this.start;
     }
     
-    public void reset_turns(){
+    public void reset(){
         Player1.set_turn(true);
         Player2.set_turn(false);
+        Player1.clear_score();
+        Player2.clear_score();
+    }
+    
+    public void switch_turns(){
+        Player1.set_turn(!Player1.get_turn());
+        Player2.set_turn(!Player2.get_turn());
     }
  
     public void update(Player p1, Player p2){
+       if(p1.get_roll().is_valid_combo()&&p2.get_roll().is_valid_combo()){        
         //handle cases of trips
         if(p1.rolled_trips() && p2.rolled_trips()){
-            if(p1.get_roll().get_point()>p2.get_roll().get_point())
-                p1.set_wins(p1.get_wins()+1);
-            else if (p1.get_roll().get_point() < p2.get_roll().get_point()) 
-                p2.set_wins(p2.get_wins()+1);                
+            if(p1.get_roll().get_point()>p2.get_roll().get_point()){
+                p1.incr_wins();
+            }
+        }else if (p1.get_roll().get_point() < p2.get_roll().get_point()){ 
+                    p2.incr_wins();                
+        }else if(p1.rolled_trips()){
+            p1.incr_wins();
+        }else if(p2.rolled_trips()){
+            p2.incr_wins();
+        }else if(p1.rolled_pair()&&p2.rolled_pair()){
+            if(p1.get_roll().get_point() > p2.get_roll().get_point()){
+                p1.incr_wins();
+            }
+            else if(p2.get_roll().get_point() > p1.get_roll().get_point()){
+                p2.incr_wins();
+            }
+            else{
+                System.out.println("There is a tie!");
+        
+            }
         }
-        else if(p1.rolled_trips())
-                p1.set_wins(p1.get_wins()+1);
-        else if(p2.rolled_trips())
-                p2.set_wins(p2.get_wins()+1);
-                
-        //handle cases of pairs
-        else {
-            if ((p1.get_roll().get_point()) > (p2.get_roll().get_point()))
-                p1.set_wins(p1.get_wins()+1);
-            else if ((p1.get_roll().get_point()) < (p2.get_roll().get_point()))
-                p2.set_wins(p2.get_wins()+1);
-        }
-        p1.pclear_score();
-        p2.pclear_score();
+        p1.clear_score();
+        p2.clear_score();
+       }
+       
     }
-    
-    
-    
 }
+
+
+    
+    
+

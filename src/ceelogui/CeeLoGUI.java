@@ -62,18 +62,94 @@ final Die[] Dice = {GameDie1, GameDie2, GameDie3};
 
 
 //set up GUI
-final VBox root = new VBox(25);
-root.setAlignment(Pos.CENTER);
+final Button btn = new Button("Roll Dice");
+final VBox root = init_gui(game, btn);
+
+
+btn.setOnAction(new EventHandler(){
+            @Override
+            public void handle(Event event) {
+                Player active_player = new Player();
+                    //check who's turn it is
+                    if(game.Player1.get_turn()){
+                        game.Player1.roll_dice(Dice[0], Dice[1], Dice[2]);
+                        System.out.println("Player 1's Turn");
+                        System.out.println("Player 1 rolled " + game.Player1.get_roll().toString());
+                        game.log += ("\nPlayer 1's turn! \n");
+                        game.log += ("Player 1 rolled " + game.Player1.get_roll().toString() + "\n");
+                        
+                        active_player = game.Player1;
+                    }
+                    if(game.Player2.get_turn()){
+                        game.Player2.roll_dice(Dice[0], Dice[1], Dice[2]);
+                        System.out.println("\nPlayer 2's Turn");
+                        System.out.println("Player 2 rolled " + game.Player2.get_roll().toString());
+                        game.log += ("\nPlayer 2's turn! \n");
+                        game.log += ("Player 2 rolled " + game.Player2.get_roll().toString() + "\n");
+                        
+                        active_player = game.Player2;
+                    }
+                    
+                    //Change turns if necessary
+                    if(active_player.get_roll().is_valid_combo())
+                        game.switch_turns();
+                    
+                    //updates die visuals in GUI
+                    update_dice(root,active_player, Player1, Player2);
+                    
+                    //check for instant win or loss
+                    if (game.Player1.rolled_instant_win()) {
+                        System.out.println("\nPlayer 1 Rolled instant win\n");
+                        game.Player1.incr_wins();
+                        game.reset();
+                        update_gui_score(root, game.Player1, game.Player2, game);
+                        game.Player1.clear_score();
+                        game.Player2.clear_score();
+                    } else if (game.Player1.rolled_instant_loss()) {
+                        System.out.println("\nPlayer 1 Rolled instant loss\n");
+                        game.Player2.incr_wins();
+                        game.reset();
+                        update_gui_score(root, game.Player1, game.Player2, game);
+                    } else if (game.Player2.rolled_instant_win()) {
+                        System.out.println("\nPlayer 2 Rolled instant win\n");
+                        game.Player2.incr_wins();
+                        game.reset();
+                        update_gui_score(root, game.Player1, game.Player2, game);
+                    } else if (game.Player2.rolled_instant_loss()) {
+                        System.out.println("\nPlayer 2 Rolled instant win\n");
+                        game.Player1.incr_wins();
+                        game.reset();
+                        update_gui_score(root, game.Player1, game.Player2, game);
+                    } 
+                        //Check for Pairs or Trips
+                    game.update(game.Player1,game.Player2);
+                    update_gui_score(root, game.Player1, game.Player2, game);
+                        
+                        
+                    System.out.println("Player 1's wins: " + game.Player1.get_wins());
+                    System.out.println("Player 2's wins: " + game.Player2.get_wins());
+                    game.log += ("Player 1's wins: " + game.Player1.get_wins() + "\n");
+                    game.log += ("Player 2's wins: " + game.Player2.get_wins() + "\n");
+            }
+        });
+
+
 primaryStage.setTitle("A Game of Cee-Lo");
+Scene scene = new Scene(root, 500, 400);
+primaryStage.setScene(scene);
+        primaryStage.show();
+    };
 
+public VBox init_gui(GameState game, Button btn){
+    final VBox root = new VBox(25);
+    root.setAlignment(Pos.CENTER);
 
-Text scenetitle = new Text("Player 1's Turn");
-scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 10));
+    Text scenetitle = new Text("Player 1's Turn");
+    scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 10));
 HBox title = new HBox(4);
 title.setAlignment(Pos.TOP_CENTER);
 title.getChildren().add(scenetitle);
 //create and add roll button
-final Button btn = new Button("Roll Dice");
 
 HBox hbBtn = new HBox(10);
 hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
@@ -117,83 +193,9 @@ player_status.getChildren().addAll(Playerwins);
                 HBox dice = new HBox(4);
                 dice.setAlignment(Pos.CENTER);
                 dice.getChildren().addAll(stack1,stack2,stack3);
-                
-btn.setOnAction(new EventHandler(){
-            @Override
-            public void handle(Event event) {
-                Player active_player = new Player();
-                    //check who's turn it is
-                    if(game.Player1.get_turn()){
-                        game.Player1.roll_dice(Dice[0], Dice[1], Dice[2]);
-                        System.out.println("Player 1's Turn");
-                        System.out.println("Player 1 rolled " + game.Player1.get_roll().toString());
-                        game.log += ("\nPlayer 1's turn! \n");
-                        game.log += ("Player 1 rolled " + game.Player1.get_roll().toString() + "\n");
-                        
-                        active_player = game.Player1;
-                    }
-                    if(game.Player2.get_turn()){
-                        game.Player2.roll_dice(Dice[0], Dice[1], Dice[2]);
-                        System.out.println("\nPlayer 2's Turn");
-                        System.out.println("Player 2 rolled " + game.Player2.get_roll().toString());
-                        game.log += ("\nPlayer 2's turn! \n");
-                        game.log += ("Player 2 rolled " + game.Player2.get_roll().toString() + "\n");
-                        
-                        
-                        active_player = game.Player2;
-                    }
-                    
-                    //updates die visuals in GUI
-                    update_dice(root,active_player, Player1, Player2);
-                    
-                    //check for instant win or loss
-                    if (game.Player1.rolled_instant_win()) {
-                        System.out.println("\nPlayer 1 Rolled instant win\n");
-                        game.Player1.set_wins(game.Player1.get_wins()+1);
-                        game.reset_turns();
-                        update_gui_score(root, game.Player1, game.Player2, game);
-                        game.update(game.Player1,game.Player2);
-                    } else if (game.Player1.rolled_instant_loss()) {
-                        System.out.println("\nPlayer 1 Rolled instant win\n");
-                        game.Player2.set_wins(game.Player2.get_wins()+1);
-                        game.reset_turns();
-                        update_gui_score(root, game.Player1, game.Player2, game);
-                        game.update(game.Player1,game.Player2);
-                    } else if (game.Player2.rolled_instant_win()) {
-                        System.out.println("\nPlayer 1 Rolled instant loss\n");
-                        game.Player2.set_wins(game.Player2.get_wins()+1);
-                        game.reset_turns();
-                        update_gui_score(root, game.Player1, game.Player2, game);
-                        game.update(game.Player1,game.Player2);
-                    } else if (game.Player2.rolled_instant_loss()) {
-                        System.out.println("\nPlayer 1 Rolled instant win\n");
-                        game.Player1.set_wins(game.Player1.get_wins()+1);
-                        game.reset_turns();
-                        update_gui_score(root, game.Player1, game.Player2, game);
-                        game.update(game.Player1,game.Player2);
-                    } 
-                        //Check for Pairs or Trips
-                      else if(game.Player1.get_roll().is_valid_combo()&&game.Player2.get_roll().is_valid_combo()){
-                            update_gui_score(root, game.Player1, game.Player2, game);
-                            game.update(game.Player1,game.Player2);
-                    }
-                        game.Player1.set_turn(!(game.Player1.get_turn()));
-                        game.Player2.set_turn(!(game.Player2.get_turn()));
-                        
-                        
-                    System.out.println("Player 1's wins: " + game.Player1.get_wins());
-                    System.out.println("Player 2's wins: " + game.Player1.get_wins());
-                    game.log += ("Player 1's wins: " + game.Player1.get_wins() + "\n");
-                    game.log += ("Player 2's wins: " + game.Player2.get_wins() + "\n");
-            }
-        });
-
-
-root.getChildren().addAll(title, player_status, dice, btn);
-Scene scene = new Scene(root, 500, 400);
-primaryStage.setScene(scene);
-        primaryStage.show();
-    };
+                root.getChildren().addAll(title, player_status, dice, btn);
+                return root;
+}
 
 public void update_gui_score(VBox root, Player p1, Player p2, GameState game){
     //update session number
@@ -205,7 +207,7 @@ public void update_gui_score(VBox root, Player p1, Player p2, GameState game){
     //update player status
     HBox player_status = new HBox(4);
     player_status.setAlignment(Pos.CENTER);
-    Text Playerwins = new Text("game.Player1 wins: " + p1.get_wins() +"\ngame.Player2 wins: " + p2.get_wins());
+    Text Playerwins = new Text("Player1 wins: " + p1.get_wins() +"\nPlayer2 wins: " + p2.get_wins());
     player_status.getChildren().addAll(Playerwins);
     root.getChildren().set(1, player_status);
     

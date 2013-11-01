@@ -3,11 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/sean/Documents/CS242/Project1/Cee-lo/src/ceelogui/Die.java</file>
             <file>file:/home/sean/Documents/CS242/Project1/Cee-lo/src/ceelogui/CeeLoGUI.java</file>
             <file>file:/home/sean/Documents/CS242/Project1/Cee-lo/src/ceelogui/Score.java</file>
             <file>file:/home/sean/Documents/CS242/Project1/Cee-lo/src/ceelogui/Player.java</file>
-            <file>file:/home/sean/Documents/CS242/Project1/Cee-lo/src/ceelogui/GameElements.java</file>
+            <file>file:/home/sean/Documents/CS242/Project1/Cee-lo/src/ceelogui/GameState.java</file>
         </group>
     </open-files>
 </project-private>
